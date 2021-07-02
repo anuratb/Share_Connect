@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body{
+    margin-top:20px;
+    background:#f5f7fa;
+}
+.panel.panel-default {
+    border-top-width: 3px;
+}
+.panel {
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.14),0 2px 2px 0 rgba(0,0,0,.098),0 1px 5px 0 rgba(0,0,0,.084);
+    border: 0;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+.thumb96 {
+    width: 96px!important;
+    height: 96px!important;
+}
+.thumb48 {
+    width: 48px!important;
+    height: 48px!important;
+}
+.alert-success
+{
+    color: rgb(0, 93, 0);
+    background-color: rgb(153, 235, 107);
+    margin-bottom: 10px;    
+}
+</style>
+<script>
+    function hideAlert(){
+        document.getElementById('alert-success').style.display = "none";
+    }
+</script>
+<div class="container ">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        
+        <form class="form-inline" action="/users/search/" method="post">
+            {%csrf_token%}
+            <input class="form-control mr-sm-2 " required name = "src_text" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn bg-primary  my-2 my-sm-0 " type="submit">Search</button>
+        </form>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                {% if is_auth %}
+                <li class="nav-item active">
+                    <img class="center-block img-responsive img-circle img-thumbnail thumb48" src={{curr_user.pic.url}} alt="Profile Picture">
+                </li>
+                {% endif %}
+                <li class="nav-item ">
+                    <a class="nav-link" href="/users/home/">Home </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/blogs">Blogs</a>
+                </li>                    
+                {%if is_auth%}
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/profile/{{curr_user.user.username}}">Profile</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Friends<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/logout">Logout</a>
+                </li>
+                <div class="nav-item " >
+                    Welcome, {{curr_user.user.first_name}}
+                </div>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/sign-up">Sign Up</a>
+                </li>
+                
+                {% endif %}
+
+            </ul>
+        </div>
+    </nav>
+    
+    
+    <div class="row ng-scope">
+        
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">                    
+                    <div class="h4 text-center">Friends</div>
+                    
+                    {% for usr in friends %}
+                    <div class="row ">   
+                        <!--Friend Details-->                     
+                        <div class="col-4">                            
+                            <a href = "/users/profile/{{usr.user.username}}"><img class="center-block img-responsive img-circle img-thumbnail thumb48" src={{usr.pic.url}} alt="Profile Picture"></a>
+                        </div>
+                        <div class="col-8">
+                            <a href = "/users/profile/{{usr.user.username}}">
+                                <b>{{usr.user.first_name}} {{usr.user.last_name}}</b>
+                            </a>
+                        </div>
+                    </div>
+                    <hr >
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content%}
+<style>
+    body{
+    margin: 0;
+    font-size: 1.0rem;
+    font-weight: 500;
+    line-height: 1.8;
+    color: #07cc59;
+    text-align: left;
+    {% load static %}
+    background-image: url({% static '/galaxy.jpg' %});
+   
+}
+.logout-status{
+    color: azure;
+}
+</style>
+<div class="container">
+    <b><div id="logout-status">Successfully Logged Out</div></b>
+    <br>
+    <a href = "/users/login">Click Here to Login Again</a>
+
+</div>
+
+
+
+{% endblock %}

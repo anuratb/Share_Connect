@@ -1,0 +1,25 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Reset Password
+From: anuratb@yahoo.com
+To: as@f.com
+Date: Tue, 29 Jun 2021 09:34:02 -0000
+Message-ID: <162495924283.10755.9280888755913058663@anurat-Inspiron-3576>
+
+
+Hello,
+
+We received a request to reset the password for your account for this email address. To initiate the password reset process for your account, click the link below.
+
+http://http://127.0.0.1:8000/users/reset/Ng/aozzwq-2e02aa2e35273de1f20dc6454fe30f9a
+
+This link can only be used once. If you need to reset your password again, please visit http://http://127.0.0.1:8000 and request another reset.
+
+If you did not make this request, you can simply ignore this email.
+
+Sincerely,
+The Website Team
+
+
+-------------------------------------------------------------------------------

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body {
+        {% load static %}
+        background-image: url({% static '/galaxy.jpg' %});
+    }
+
+    .navbar {
+        margin: 1rem;
+        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .098), 0 1px 5px 0 rgba(0, 0, 0, .084);
+        background-color: rgba(145, 186, 224, 0.664);
+    }
+
+    .nav-btn {
+        color: rgb(28, 109, 231);
+    }
+    .home-body{
+        background-color: rgb(250, 250, 250);
+        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .098), 0 1px 5px 0 rgba(0, 0, 0, .084);
+        border: 0;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        margin-top: 20px;
+        color:blue;
+        font-family: cursive;
+        font-size: large;
+        border-top-width: 3px;
+    }
+    .about{
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+    }
+    .thumb48 {
+    width: 48px!important;
+    height: 48px!important;
+}
+</style>
+<div class="container">
+    <div class="main-body">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <form class="form-inline" action="/users/search/" method="post">
+                {%csrf_token%}
+                <input class="form-control mr-sm-2 " required name = "src_text" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn bg-primary  my-2 my-sm-0 " type="submit">Search</button>
+            </form>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    {% if is_auth %}
+                    <li class="nav-item active">
+                        <img class="center-block img-responsive img-circle img-thumbnail thumb48" src={{user.pic.url}} alt="Profile Picture">
+                    </li>
+                    {%endif%}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/blogs">Blogs</a>
+                    </li>                    
+                    {%if is_auth%}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/profile/{{user.user.username}}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/{{user.user.username}}/friends/">Friends</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/{{user.user.username}}/friends-requests/">Friend Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/logout">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/sign-up">Sign Up</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </nav>
+
+        {%if is_auth%}
+        <div class="home-body">
+            <h3>Welcome to share and connect, {{user.user.first_name}}</h3>
+            Explore ,read ,post ,make friends and enjoy!
+            <br><br>
+            <div class="about">
+                <h3>About</h3>
+                This is a website where users can connect with one another ,<br>
+                post blogs, give  votes and enjoy :)
+            </div>
+        </div>
+        {% else %}
+        <div class="home-body">
+            <h3>Welcome to share and connect, Guest</h3>
+            Explore ,read ,post ,make friends and enjoy!<br>
+            To get the max benefit <a href="/users/sign-up">Sign Up</a> or 
+            if you already have an account <a href="/users/login">Login</a> now.
+            <br><br>
+            <div class="about">
+                <h3>About</h3>
+                This is a website where users can connect with one another ,<br>
+                post blogs, give  votes and enjoy :)
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{%endblock%}

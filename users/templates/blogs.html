@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+{% block content %}
+<script>
+    edit_blg_id = null;
+    function toogleEdit(blg_id){    
+        if(edit_blg_id!=null)
+        {
+            var id = "#"+"blog_"+String(edit_blg_id);           
+            $(id).toggle();  
+            var id2 = "#"+"blog_edit_"+String(edit_blg_id);
+            $(id2).toggle();  
+        }    
+        var id = "#"+"blog_"+String(blg_id);           
+        $(id).toggle();  
+        var id2 = "#"+"blog_edit_"+String(blg_id);
+        $(id2).toggle(); 
+        edit_blg_id = blg_id; 
+        return false;
+    }
+    
+    $(document).ready(
+        function(){
+            {%for blg in blgs%}
+            var id = "#"+"id_visibility_{{blg.blg.id}}";
+            var $option = $(id).children('option[value="{{blg.blg.visibility}}"]');
+            $option.attr("selected",true);
+            {%endfor%}
+        }
+        
+    );
+    
+</script>
+<style>
+    body {
+            {% load static %}
+
+        background-image: url({% static '/galaxy.jpg' %});
+    }
+
+    .navbar {
+        margin: 1rem;
+        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .098), 0 1px 5px 0 rgba(0, 0, 0, .084);
+        background-color: rgba(145, 186, 224, 0.664);
+    }
+
+    .nav-btn {
+        color: rgb(28, 109, 231);
+    }
+
+    .blog-body {
+        
+        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .098), 0 1px 5px 0 rgba(0, 0, 0, .084);
+        border: 0;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        margin-top: 20px;
+
+        border-top-width: 3px;
+    }
+
+    .about {
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+    }
+
+    .thumb48 {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .blog-subject {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: large;
+    }
+
+    .create-blog {
+        padding: 2rem;
+    }
+    .blog{
+        margin: 2rem;
+    }
+    .blog-edit{  
+        margin: 2rem;      
+        display: none;
+    }
+
+</style>
+
+<div class="container">
+    
+    <div class="main-body">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <form class="form-inline" action="/users/search/" method="post">
+                {%csrf_token%}
+                <input class="form-control mr-sm-2 " required name = "src_text" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn bg-primary  my-2 my-sm-0 " type="submit">Search</button>
+            </form>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    {%if is_auth%}
+                    <li class="nav-item active">
+                        <img class="center-block img-responsive img-circle img-thumbnail thumb48"
+                            src={{curr_user.pic.url}} alt="Profile Picture">
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/users/home/">Home </a>
+                    </li>
+                    {%endif%}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Blogs<span class="sr-only">(current)</span></a>
+                    </li>
+                    {%if is_auth%}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/profile/{{curr_user.user.username}}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/{{curr_user.user.username}}/friends/">Friends</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/logout">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/sign-up">Sign Up</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="list-group " >
+            <!--FORM FOR BLOG CREATION-->
+            {% if is_auth %}
+            <li class="list-group-item">
+                <form class="form-group create-blog" method="post" action="/blogs/post-blog/">
+                    {% csrf_token %}
+                    <div class="row">
+                        <label class="col-2 " for="subject">Subject :</label>
+                        <input class="col-10 form-control" type="text" required placeholder="Subject" name="subject"
+                            id="subject">
+                    </div>
+                    <br>
+                    <div>
+                        <label class="required" for="id_visibility">Visibility:</label>
+                        <select name="visibility" id="id_visibility">
+                            <option value="ONLY_ME" selected="">Only Me</option>
+                            <option value="FRIENDS">Friends</option>
+                            <option value="PUBLIC">Public</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label class="col-12" for="content">Content:</label>
+                    </div>
+                    <div class="row">
+                        <textarea class="col-12 form-control " required placeholder="Write your Blog" name="content"
+                            id="content"></textarea>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Post Blog">
+                </form>
+            </li>
+            {%endif%}
+            
+            {% for blg in blgs %}
+            <li class="list-group-item blog-edit" id="blog_edit_{{blg.blg.id}}">
+                <!--FOR EDITING BLOG-->
+                <form class="form-group create-blog"  method="post" action="/blogs/update-blog/{{blg.blg.id}}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <label class="col-2 " for="subject">Subject :</label>
+                        <input class="col-10 form-control" type="text" required  placeholder="Subject" name="subject"
+                            id="subject" value={{blg.blg.subject}}>
+                    </div>
+                    <br>
+                    <div>
+                        <label class="required" for="id_visibility">Visibility:</label>
+                        <select name="visibility" id="id_visibility_{{blg.blg.id}}" >
+                            <option value="ONLY_ME" >Only Me</option>
+                            <option value="FRIENDS">Friends</option>
+                            <option value="PUBLIC">Public</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label class="col-12" for="content">Content:</label>
+                    </div>
+                    <div class="row">
+                        <textarea class="col-12 form-control " required placeholder="Write your Blog" name="content"
+                            id="content" >{{blg.blg.content}}</textarea>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Update Blog">
+                </form>
+            </li>
+
+            <li class="list-group-item blog " id="blog_{{blg.blg.id}}">
+                <div class="blog-body" >
+                    <div class="row justify-content-between blog-header">
+                        <div class="col-9">
+                            <h5 class="blog-subject">
+                                <div class="row">
+                                    <div class="col-2">
+                                        {{blg.blg.subject}}
+                                    </div>
+                                    <div class="col-10">
+                                        {% if is_auth and curr_user.user == blg.blg.author %}
+                                        <form class="form-inline" >
+                                            {% csrf_token %}
+                                            <button type="submit" type="button" onclick="return toogleEdit({{blg.blg.id}})" class="btn btn-outline btn-sm" name="edit" ><i class="fas fa-edit"></i></button>
+                                        </form>
+                                            
+                                        {% endif %}
+                                    </div>
+                                </div>       
+                            </h5>
+                            {{blg.blg.visibility}}
+                        </div>
+                        <div class="col-3">
+                            {{blg.blg.date_posted}}
+                        </div>
+                    </div>
+                    <div class="row blog-content">
+                        <div class="col-12">
+                            {{blg.blg.content}}
+                        </div>
+                    </div>
+                    <div class="row justify-content-between">
+                        <div class="col-3">
+                            <div>
+                                Votes : {{blg.blg.votes}}
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            {% if is_auth %}
+                                {% if blg.upvoted %}
+                                <form class="form-inline" method="post" action="/blogs/upvote-blog/{{blg.blg.id}}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary" name="upvote" >Upvote</button>
+                                </form>
+                                {%else%}
+                                <form class="form-inline" method="post" action="/blogs/upvote-blog/{{blg.blg.id}}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary" name="upvote" >Upvote</button>
+                                </form> 
+                                {%endif%}
+                            {% endif%}
+                        </div>
+                        <div class="col-3">
+                            {% if is_auth %}
+                                {% if blg.downvoted %}
+                                <form class="form-inline" method="post" action="/blogs/downvote-blog/{{blg.blg.id}}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary" name="downvote" >Downvote</button>
+                                </form>                            
+                                {%else%}
+                                <form class="form-inline" method="post" action="/blogs/downvote-blog/{{blg.blg.id}}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary" name="downvote" >Downvote</button>
+                                </form>                            
+                                {%endif%}
+                            {% endif%}
+                        </div>
+                        <div class="col-4">
+                            <div>
+                                by : <a href="/users/profile/{{blg.blg.author.username}}">{{blg.blg.author}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Comments-->
+                <div class="row justify-content-between">
+                    <div class="col-12">
+                        <h5>Comments</h5>
+                    </div>
+                </div>
+                <ul class="comments list-group">
+                    {%for comment in blg.comments%}
+                    <li class="list-group-item">
+                        <div class="row justify-content-between comment-header">
+                            <div class="col-9">
+                                <h5 class="comment-subject">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            {{comment.comment.subject}}
+                                        </div>
+                                        
+                                    </div>       
+                                </h5>
+                                
+                            </div>
+                            <div class="col-3">
+                                {{comment.comment.date_posted}}
+                            </div>
+                        </div>
+                        <div class="row comment-content">
+                            <div class="col-12">
+                                {{comment.comment.content}}
+                            </div>
+                        </div>
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <div>
+                                    Votes : {{comment.comment.votes}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                {% if is_auth %}
+                                    {% if comment.upvoted %}
+                                    <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}" >
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary" name="upvote" >Upvote</button>
+                                    </form>
+                                    {%else%}
+                                    <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-primary" name="upvote" >Upvote</button>
+                                    </form> 
+                                    {%endif%}
+                                {% endif%}
+                            </div>
+                            <div class="col-3">
+                                {% if is_auth %}
+                                    {% if comment.downvoted %}
+                                    <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary" name="downvote" >Downvote</button>
+                                    </form>                            
+                                    {%else%}
+                                    <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-primary" name="downvote" >Downvote</button>
+                                    </form>                            
+                                    {%endif%}
+                                {% endif%}
+                            </div>
+                            <div class="col-4">
+                                <div>
+                                    by : <a href="/users/profile/{{comment.comment.author}}">{{comment.comment.author}}</a>
+                                </div>
+                            </div>
+                        </div>           
+                    </li>
+                    {%endfor%}
+                    {% if is_auth %}
+                    <li class="list-group-item">
+                        <form class="form-group create-comment" method="post" action="/blogs/post-comments/{{blg.blg.id}}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <label class="col-2 " for="subject">Subject :</label>
+                                <input class="col-10 form-control" type="text" required placeholder="Subject" name="subject"
+                                    id="subject">
+                            </div>
+                            <br>
+                            
+                            <div class="row">
+                                <label class="col-12" for="content">Content:</label>
+                            </div>
+                            <div class="row">
+                                <textarea class="col-12 form-control " required placeholder="Add Comment" name="content"
+                                    id="content"></textarea>
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Post Comment">
+                        </form>
+                    </li>
+                    {%endif%}
+                </ul>
+            </li>
+            
+            {% endfor %}
+        </ul>
+
+    </div>
+</div>
+{%endblock%}

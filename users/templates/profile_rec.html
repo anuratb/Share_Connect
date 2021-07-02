@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .main-body{
+        background-color: aliceblue;
+    }
+    .profile-pic {
+        height: 110px;
+        overflow: hidden;
+    }
+
+    .profile-head {
+        align-items: center;
+        display: flex;
+        background-color: gainsboro;
+    }
+
+    .profile-name {
+        font-size: large;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        color: darkblue;
+    }
+
+    .rating {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-style: italic;
+        font-size: medium;
+        color: blue;
+    }
+
+    .edit-profile {
+        align-content: flex-end;
+        text-align: right;
+    }
+
+    .cover-body {
+        
+    }
+
+    .profile-header-links {}
+</style>
+<div class="container">
+    <div class="main-body">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="main-breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/users/home">Home</a></li>
+                <li class="breadcrumb-item"><a href="/users/profile">Profile</a></li>
+            </ol>
+        </nav>
+        <!-- /Breadcrumb -->
+        <div class="row profile-head">
+            <div class=" col-md-12 cover-body d-flex justify-content-between align-items-center">
+                <div >
+                    <img class="profile-pic " alt="profile" src={{user.pic.url}}>
+                    <div class="profile-name">{{ user.user.first_name }} {{user.user.last_name}}</div>
+                    <div class='rating'>&nbsp Rating : {{user.rating}}</div>
+                </div>
+
+                <div class="d-md-blocks edit-profile">
+                    <a class="btn btn-primary" href="#"> Edit Profile</a>
+                </div>
+            </div>
+            <div class="w-100"></div>
+            <div class="col-md-12 profile-header-links ">
+                Friends   |  Blogs
+            </div>
+        </div>
+        <div class="profile-details">
+            <b>First Name: </b>{{user.user.first_name}}
+            <br>
+            <b>Last Name: </b> {{user.user.last_name}}
+            <br>
+            <b>Email: </b>{{user.user.email}}
+            <br>
+            <b>Bio: </b>
+            <p>{{user.bio}}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: TestSite password reset
+From: webmaster@localhost
+To: as@f.com
+Date: Tue, 29 Jun 2021 14:33:04 -0000
+Message-ID: <162497718467.16015.11603655653340908660@anurat-Inspiron-3576>
+
+
+To initiate the password reset process for your as TestSite Account,
+click the link below:
+
+http://127.0.0.1:8000/users/reset/reset/Ng/ap0dr4-598c2a1f805a8d580ba8cbeff4669526/
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+Sincerely,
+The TestSite Team
+
+-------------------------------------------------------------------------------

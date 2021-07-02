@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content%}
+<style>
+    body{
+    margin: 0;
+    font-size: 1.0rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #212529;
+    text-align: left;
+    {% load static %}
+    background-image: url({% static '/galaxy.jpg' %}) ;
+   
+}
+.login-form{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+.login-box{
+    background-color: rgba(196, 232, 236, 0.5) !important;
+    
+    
+}
+</style>
+
+
+ 
+
+<div class="container">
+    <br><br>
+    <div id="login-row" class="row justify-content-center align-items-center">
+        <div id="login-column" class="col-md-6">
+            <div id="login-box" class="col-md-12 login-box">
+                <form id="login-form" method="post" class="form-group">
+                    {% csrf_token %}
+                    <h2 style="color: black;">Login to your account</h2>
+                    <label for="user_id">Username</label>
+                    <input type="text" required class="form-control" placeholder="Enter Username" name="username" id="user_id">
+                    <label for="password_id">Password</label>
+                    <input type="password" required class="form-control" name="password" placeholder="Enter Password"
+                        id="password_id">
+                        <br>
+                    <input type='submit' class='btn bg-primary' value='Login'>
+                    {% if wrong_cred %}
+                    <p style="color: red;">Wrong Username or Password</p>
+                    {% endif %}
+                    <a style="color: rgb(0, 21, 139) ;font-family: 'Times New Roman', Times, serif;" href="/users/reset/password_reset">Forgot Password</a>
+                    <br>
+                    <a style="color: rgb(0, 21, 139) ;font-family: 'Times New Roman', Times, serif;" href="/users/sign-up/">Sign Up</a>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %}

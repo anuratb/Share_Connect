@@ -2,7 +2,7 @@ from rest_framework import generics
 import json
 from .serializers import ProfileSerializer
 from .models import Profile
-from django.http.response import HttpResponse, JsonResponse, HttpResponseNotFound
+from django.http.response import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseNotFound
 from django.http.request import HttpRequest
 from django.contrib.auth.models import User
 from blog.models import Blog
@@ -149,13 +149,13 @@ def friends(request, **kwargs):
             return HttpResponseNotFound('The username '+kwargs['username']+' does not exits')
 
 @login_required
-def friends_requests(request):
+def friend_requests(request):
     if request.method == 'GET':
         usr = request.user
-        is_auth = request.user.is_authenticated
-        return render(request,'friends.html',{                
-                'friends_requests': usr.profile.friend_req_list.all(),
-                'is_auth': is_auth,
+        
+        return render(request,'friend_requests.html',{                
+                'friend_requests': usr.profile.friend_req_list.all(),
+                'is_auth': True,
                 'curr_user':request.user.profile
             })
 
@@ -224,6 +224,7 @@ def profile(request, **kwargs):
                     "nf": usr.profile.friends.count(),
                     "is_auth": True,
                     "is_friend": is_friend,
+                    "friend_req_sent": usr.profile in request.user.profile.sent_friend_req_list.all(),
                     'blgs':[{'blg':blg,'comments':[{
                             'comment':comment,
                             'upvoted':request.user in comment.upvoted.all(),
@@ -290,7 +291,7 @@ def handleSignUp(request):
                        last_name=request.POST['last_name'],
                        email=request.POST['email']
                        )
-            usr.save()
+            
             profile = Profile(user=usr, bio="", rating=0)
             profile.save()
             return redirect('/users/home')
@@ -342,3 +343,64 @@ def logout(request):
         return render(request, 'logout.html')
     except:
         return JsonResponse({'status': False, 'message': 'Some errorr occured'})
+
+
+@login_required
+def accept_request(request,**kwargs):
+    if request.method=='POST':
+        usr = User.objects.get(username=kwargs['username'])
+        if usr is None:
+            return HttpResponseNotFound('Usnername doesnt exist ')
+        if request.user.profile.friend_req_list.get(user=usr) is not None:
+            request.user.profile.friend_req_list.remove(usr.profile)
+            request.user.profile.friends.add(usr.profile)
+            request.user.profile.save()
+            usr.profile.save()
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            return HttpResponseNotFound('Username '+kwargs['username']+' doesnt exist in your friend request list')
+
+@login_required
+def reject_request(request,**kwargs):
+    if request.method=='POST':
+        usr = User.objects.get(username=kwargs['username'])
+        if usr is None:
+            return HttpResponseNotFound('Usnername doesnt exist ')
+        if request.user.profile.friend_req_list.get(user=usr) is not None:
+            request.user.profile.friend_req_list.remove(usr.profile)            
+            request.user.profile.save()
+            usr.profile.save()
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            return HttpResponseNotFound('Username '+kwargs['username']+' doesnt exist in your friend request list')
+@login_required
+def send_friend_request(request,**kwargs):
+    if request.method=='POST':
+        usr = User.objects.get(username=kwargs['username'])#to send req to usr from curr_user
+        if usr is None:
+            return JsonResponse({
+                'status' : False,
+                'msg':'Username Doesnt exist'
+            })
+        if usr.profile not in request.user.profile.friends.all():
+            if usr.profile not in request.user.profile.sent_friend_req_list.all():
+                #send friend request
+                usr.profile.friend_req_list.add(request.user.profile)                
+                request.user.profile.save()
+                usr.profile.save()
+                return JsonResponse({
+                    'status' : True
+                })
+            else:
+                #cancel friend request
+                usr.profile.friend_req_list.remove(request.user.profile)
+                request.user.profile.save()
+                usr.profile.save()
+                return JsonResponse({
+                    'status' : True
+                })
+        else:
+            return JsonResponse({
+                    'status' : False,
+                    'msg' : 'User is already the friend'
+                })

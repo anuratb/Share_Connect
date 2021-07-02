@@ -10,7 +10,14 @@
     text-align: left;
     {% load static %}
     background-image: url({% static '/galaxy.jpg' %});
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
    
+}
+.container{
+    font-size: large;
 }
 .logout-status{
     color: azure;

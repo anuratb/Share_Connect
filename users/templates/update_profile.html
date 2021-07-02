@@ -5,6 +5,7 @@
 body{
     margin-top:20px;
     background:#f5f7fa;
+    
 }
 .panel.panel-default {
     border-top-width: 3px;
@@ -65,9 +66,17 @@ body{
                 <li class="nav-item">
                     <a class="nav-link" href="/users/{{user.user.username}}/friends/">Friends</a>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/friend-requests/">Friend Requests</a>
+                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="/users/logout">Logout</a>
                 </li>
+                <div class="nav-item " >
+                    Welcome, {{user.user.first_name}}
+                </div>
                 
 
             </ul>

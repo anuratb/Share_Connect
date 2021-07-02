@@ -35,6 +35,7 @@
             {% load static %}
 
         background-image: url({% static '/galaxy.jpg' %});
+        
     }
 
     .navbar {
@@ -122,8 +123,14 @@
                         <a class="nav-link" href="/users/{{curr_user.user.username}}/friends/">Friends</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/users/friend-requests/">Friend Requests</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/users/logout">Logout</a>
                     </li>
+                    <div class="nav-item " >
+                        Welcome, {{curr_user.user.first_name}}
+                    </div>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/users/login">Login</a>
@@ -173,11 +180,12 @@
             <li class="list-group-item blog-edit" id="blog_edit_{{blg.blg.id}}">
                 <!--FOR EDITING BLOG-->
                 <form class="form-group create-blog"  method="post" action="/blogs/update-blog/{{blg.blg.id}}">
-                    {% csrf_token %}
+                    {% csrf_token %}                    
+                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                     <div class="row">
                         <label class="col-2 " for="subject">Subject :</label>
                         <input class="col-10 form-control" type="text" required  placeholder="Subject" name="subject"
-                            id="subject" value={{blg.blg.subject}}>
+                            id="subject" value="{{blg.blg.subject}}">
                     </div>
                     <br>
                     <div>
@@ -205,10 +213,10 @@
                         <div class="col-9">
                             <h5 class="blog-subject">
                                 <div class="row">
-                                    <div class="col-2">
+                                    <div class="col-auto">
                                         {{blg.blg.subject}}
                                     </div>
-                                    <div class="col-10">
+                                    <div class="col-auto">
                                         {% if is_auth and curr_user.user == blg.blg.author %}
                                         <form class="form-inline" >
                                             {% csrf_token %}
@@ -241,11 +249,13 @@
                                 {% if blg.upvoted %}
                                 <form class="form-inline" method="post" action="/blogs/upvote-blog/{{blg.blg.id}}">
                                     {% csrf_token %}
+                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                     <button type="submit" class="btn btn-primary" name="upvote" >Upvote</button>
                                 </form>
                                 {%else%}
                                 <form class="form-inline" method="post" action="/blogs/upvote-blog/{{blg.blg.id}}">
                                     {% csrf_token %}
+                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                     <button type="submit" class="btn btn-outline-primary" name="upvote" >Upvote</button>
                                 </form> 
                                 {%endif%}
@@ -256,11 +266,13 @@
                                 {% if blg.downvoted %}
                                 <form class="form-inline" method="post" action="/blogs/downvote-blog/{{blg.blg.id}}">
                                     {% csrf_token %}
+                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                     <button type="submit" class="btn btn-primary" name="downvote" >Downvote</button>
                                 </form>                            
                                 {%else%}
                                 <form class="form-inline" method="post" action="/blogs/downvote-blog/{{blg.blg.id}}">
                                     {% csrf_token %}
+                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                     <button type="submit" class="btn btn-outline-primary" name="downvote" >Downvote</button>
                                 </form>                            
                                 {%endif%}
@@ -282,7 +294,7 @@
                 <ul class="comments list-group">
                     {%for comment in blg.comments%}
                     <li class="list-group-item">
-                        <div class="row justify-content-between comment-header">
+                        <div class="row justify-content-between comment-header" id = "comment_{{comment.comment.id}}">
                             <div class="col-9">
                                 <h5 class="comment-subject">
                                     <div class="row">
@@ -314,11 +326,13 @@
                                     {% if comment.upvoted %}
                                     <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}" >
                                         {% csrf_token %}
+                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                         <button type="submit" class="btn btn-primary" name="upvote" >Upvote</button>
                                     </form>
                                     {%else%}
                                     <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}">
                                         {% csrf_token %}
+                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                         <button type="submit" class="btn btn-outline-primary" name="upvote" >Upvote</button>
                                     </form> 
                                     {%endif%}
@@ -329,11 +343,13 @@
                                     {% if comment.downvoted %}
                                     <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}">
                                         {% csrf_token %}
+                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                         <button type="submit" class="btn btn-primary" name="downvote" >Downvote</button>
                                     </form>                            
                                     {%else%}
-                                    <form class="form-inline" method="post" action="/blogs/upvote-comment/{{comment.comment.id}}">
+                                    <form class="form-inline" method="post" action="/blogs/downvote-comment/{{comment.comment.id}}">
                                         {% csrf_token %}
+                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                         <button type="submit" class="btn btn-outline-primary" name="downvote" >Downvote</button>
                                     </form>                            
                                     {%endif%}
@@ -347,10 +363,12 @@
                         </div>           
                     </li>
                     {%endfor%}
+                    <!--Post Comment-->
                     {% if is_auth %}
                     <li class="list-group-item">
                         <form class="form-group create-comment" method="post" action="/blogs/post-comments/{{blg.blg.id}}">
                             {% csrf_token %}
+                            <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                             <div class="row">
                                 <label class="col-2 " for="subject">Subject :</label>
                                 <input class="col-10 form-control" type="text" required placeholder="Subject" name="subject"

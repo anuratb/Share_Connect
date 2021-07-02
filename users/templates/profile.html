@@ -1,6 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
-<script>
+{% csrf_token %}
+<script>    
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    function sendFriendReq(usr_name){
+        console.log(usr_name);
+        
+        fetch('/users/send-friend-req/'+String(usr_name)+'/', {
+            headers: {'X-CSRFToken': csrftoken},
+            method: 'POST',
+            mode: 'same-origin'  // Do not send CSRF token to another domain.
+        }).then(function(response) {
+            response.json().then(function(data){
+                if(data.status){
+                    
+                    var prev_val = $('#send-friend-req').html(); 
+                    console.log(prev_val);
+                    if(String(prev_val)=='Send Friend Request')
+                    {
+                        console.log(1);
+                        $('#send-friend-req').text('Cancel Request');
+                    }
+                    else
+                    {
+                        $('#send-friend-req').text('Send Friend Request');
+                    }
+                }
+                else
+                {
+                    alert(data.msg);
+                }
+            })
+        });
+    }
     edit_blg_id = null;
     function toogleEdit(blg_id){    
         if(edit_blg_id!=null)
@@ -24,17 +57,26 @@
             var id = "#"+"id_visibility_{{blg.blg.id}}";
             var $option = $(id).children('option[value="{{blg.blg.visibility}}"]');
             $option.attr("selected",true);
-            var id2 = "#"+"blog_edit_{{blg.blg.id}}";
-            $(id2).css('display','none');  
+            //var id2 = "#"+"blog_edit_{{blg.blg.id}}";
+            //$(id2).css('display','none');  
             {%endfor%}
+            {%if friend_req_sent%}
+            $('#send-friend-req').text('Cancel Request');
+            {%else%}
+            $('#send-friend-req').text('Send Friend Request');
+            {%endif%}
+            
         }
-        
     );
     
 </script>
 <style>
     .container {
         background-color: rgb(218, 229, 238);
+        -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
     }
 
     .profile-pic {
@@ -146,6 +188,10 @@
         width: 48px;
         height: 48px;
     }
+    .blog-edit{  
+        margin: 2rem;      
+        display: none;
+    }
 </style>
 <div class="container">
     <div class="main-body">
@@ -181,9 +227,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/users/{{curr_user.user.username}}/friends/">Friends</a>
                     </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/friend-requests/">Friend Requests</a>
+                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="/users/logout">Logout</a>
                     </li>
+                    <div class="nav-item " >
+                        Welcome, {{curr_user.user.first_name}}
+                    </div>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/users/login">Login</a>
@@ -219,7 +273,9 @@
                 </div>
                 {% if is_auth and not is_curr_user and not is_friend %}
                 <div class="col-4">
-                    <a href="#">Send Friend Request</a>
+                    <button onclick="sendFriendReq('{{user.user.username}}');return false;" id="send-friend-req" class="btn btn-outline-primary">
+                        
+                    </button>
                 </div>
                 {% endif %}
             </div>
@@ -287,7 +343,7 @@
                             <div class="card-title">
                                 <h4>Blogs</h4>
                             </div>
-                            <ul class="list-group ">
+                            <ul class="list-group " style="list-style-type: none;">
                                 <!--FORM FOR BLOG CREATION-->
                                 {% if is_auth %}
                                 <li class="list-group-item">
@@ -320,16 +376,17 @@
                                 {%endif%}
 
                                 {% for blg in blgs %}
-                                <li class="list-group-item " id="blog_edit_{{blg.blg.id}}">
+                                <li class="list-group-item blog-edit" id="blog_edit_{{blg.blg.id}}">
                                     <!--FOR EDITING BLOG-->
                                     <form class="form-group create-blog" method="post"
                                         action="/blogs/update-blog/{{blg.blg.id}}">
                                         {% csrf_token %}
+                                        <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                         <div class="row">
                                             <label class="col-auto " for="subject">Subject :</label>
                                             <input class="col-auto form-control" type="text" required
                                                 placeholder="Subject" name="subject" id="subject"
-                                                value={{blg.blg.subject}}>
+                                                value="{{blg.blg.subject}}">
                                         </div>
                                         <br>
                                         <div>
@@ -398,6 +455,7 @@
                                                 <form class="form-inline" method="post"
                                                     action="/blogs/upvote-blog/{{blg.blg.id}}">
                                                     {% csrf_token %}
+                                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                                     <button type="submit" class="btn btn-primary"
                                                         name="upvote">Upvote</button>
                                                 </form>
@@ -405,6 +463,7 @@
                                                 <form class="form-inline" method="post"
                                                     action="/blogs/upvote-blog/{{blg.blg.id}}">
                                                     {% csrf_token %}
+                                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                                     <button type="submit" class="btn btn-outline-primary"
                                                         name="upvote">Upvote</button>
                                                 </form>
@@ -417,6 +476,7 @@
                                                 <form class="form-inline" method="post"
                                                     action="/blogs/downvote-blog/{{blg.blg.id}}">
                                                     {% csrf_token %}
+                                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                                     <button type="submit" class="btn btn-primary"
                                                         name="downvote">Downvote</button>
                                                 </form>
@@ -424,6 +484,7 @@
                                                 <form class="form-inline" method="post"
                                                     action="/blogs/downvote-blog/{{blg.blg.id}}">
                                                     {% csrf_token %}
+                                                    <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                                     <button type="submit" class="btn btn-outline-primary"
                                                         name="downvote">Downvote</button>
                                                 </form>
@@ -447,7 +508,7 @@
                                     <ul class="comments list-group">
                                         {%for comment in blg.comments%}
                                         <li class="list-group-item">
-                                            <div class="row justify-content-between comment-header">
+                                            <div class="row justify-content-between comment-header" id = "comment_{{comment.comment.id}}">
                                                 <div class="col-9">
                                                     <h5 class="comment-subject">
                                                         <div class="row">
@@ -480,6 +541,7 @@
                                                     <form class="form-inline" method="post"
                                                         action="/blogs/upvote-comment/{{comment.comment.id}}">
                                                         {% csrf_token %}
+                                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                                         <button type="submit" class="btn btn-primary"
                                                             name="upvote">Upvote</button>
                                                     </form>
@@ -487,6 +549,7 @@
                                                     <form class="form-inline" method="post"
                                                         action="/blogs/upvote-comment/{{comment.comment.id}}">
                                                         {% csrf_token %}
+                                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                                         <button type="submit" class="btn btn-outline-primary"
                                                             name="upvote">Upvote</button>
                                                     </form>
@@ -497,15 +560,17 @@
                                                     {% if is_auth %}
                                                     {% if comment.downvoted %}
                                                     <form class="form-inline" method="post"
-                                                        action="/blogs/upvote-comment/{{comment.comment.id}}">
+                                                        action="/blogs/downvote-comment/{{comment.comment.id}}">
                                                         {% csrf_token %}
+                                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                                         <button type="submit" class="btn btn-primary"
                                                             name="downvote">Downvote</button>
                                                     </form>
                                                     {%else%}
                                                     <form class="form-inline" method="post"
-                                                        action="/blogs/upvote-comment/{{comment.comment.id}}">
+                                                        action="/blogs/downvote-comment/{{comment.comment.id}}">
                                                         {% csrf_token %}
+                                                        <input type="hidden" name="back_ref" value="#comment_{{comment.comment.id}}">
                                                         <button type="submit" class="btn btn-outline-primary"
                                                             name="downvote">Downvote</button>
                                                     </form>
@@ -527,6 +592,7 @@
                                             <form class="form-group create-comment" method="post"
                                                 action="/blogs/post-comments/{{blg.blg.id}}">
                                                 {% csrf_token %}
+                                                <input type="hidden" name="back_ref" value="#blog_{{blg.blg.id}}">
                                                 <div class="row">
                                                     <label class="col-auto " for="subject">Subject :</label>
                                                     <input class="col-auto form-control" type="text" required

@@ -1,0 +1,22 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: TestSite password reset
+From: webmaster@localhost
+To: a@dgf.com
+Date: Fri, 02 Jul 2021 07:36:00 -0000
+Message-ID: <162521136032.12426.9096450144130757285@anurat-Inspiron-3576>
+
+
+To initiate the password reset process for your usr6 TestSite Account,
+click the link below:
+
+http://127.0.0.1:8000/users/reset/reset/MTA/ap5eg0-b6e8189f71b267e9938933e912e55b17/
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+Sincerely,
+The TestSite Team
+
+-------------------------------------------------------------------------------

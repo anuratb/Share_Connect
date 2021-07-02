@@ -7,7 +7,7 @@ class Profile(models.Model):
     pic = models.ImageField(default="default.png",blank=True)    
     rating = models.IntegerField(default=0)
     friends = models.ManyToManyField('self',related_name='friend_list',blank=True,symmetrical=True)    
-    friend_req_list = models.ManyToManyField('self',related_name='friend_req_lst',blank=True,symmetrical=False)
+    friend_req_list = models.ManyToManyField('self',related_name='sent_friend_req_list',blank=True,symmetrical=False)
     class Meta:
         ordering = ['-rating']
     def __str__(self) :

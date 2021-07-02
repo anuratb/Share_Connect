@@ -11,13 +11,13 @@ from .models import Blog,Comment
 def post_blog(request):
     try:
         if(request.method == 'POST'):
-            blg = Blog.objects.create(
+            Blog.objects.create(
                 author=request.user,
                 subject=request.POST['subject'],
                 content=request.POST['content'],
                 visibility = request.POST['visibility']
             )
-            blg.save()
+            
             return redirect(request.META['HTTP_REFERER'])
 
     except Exception :
@@ -39,23 +39,23 @@ def update_blog(request,**kwargs):
             blg.content = request.POST['content']
             blg.visibility = request.POST['visibility']
             blg.save()
-            return redirect(request.META['HTTP_REFERER'])
+            return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
     except Exception :
-        return HttpResponse('Failed To post Blog')
+        return HttpResponse('Failed To Update Blog')
 @login_required
 def upvote(request,**kwargs):
     if(request.method=='POST'):
         curr_blg = Blog.objects.get(id=kwargs['blog_id'])
         curr_blg.upvote(request.user)
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
 @login_required
 def downvote(request,**kwargs):
     if(request.method=='POST'):
         curr_blg = Blog.objects.get(id=kwargs['blog_id'])
         curr_blg.downvote(request.user)
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
 @login_required
 def add_comment(request,**kwargs):
@@ -67,21 +67,21 @@ def add_comment(request,**kwargs):
             content = request.POST['content'],
             blog_ref = curr_blg)
         comment.save()
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
 @login_required
 def upvote_comment(request,**kwargs):
     if(request.method=='POST'):
         curr_cmt = Comment.objects.get(id = kwargs['comment_id'])
         curr_cmt.upvote(request.user)
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
 @login_required
 def downvote_comment(request,**kwargs):
     if(request.method=='POST'):
         curr_cmt = Comment.objects.get(id = kwargs['comment_id'])
         curr_cmt.downvote(request.user)
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
 @login_required
 def delete_blog(request):    

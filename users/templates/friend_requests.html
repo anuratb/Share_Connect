@@ -64,17 +64,18 @@ body{
                 <li class="nav-item">
                     <a class="nav-link" href="/users/profile/{{curr_user.user.username}}">Profile</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/users/{{curr_user.user.username}}/friends/">Friends<span class="sr-only">(current)</span></a>
+                <li class="nav-item ">
+                    <a class="nav-link" href="/users/{{curr_user.user.username}}/friends/">Friends</a>
                 </li>
                 
-                <li class="nav-item">
-                    <a class="nav-link" href="/users/friend-requests/">Friend Requests</a>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/users/friend-requests/">Friend Requests<span class="sr-only">(current)</span></a>
                 </li>
                 
                 <li class="nav-item">
                     <a class="nav-link" href="/users/logout">Logout</a>
                 </li>
+                
                 <div class="nav-item " >
                     Welcome, {{curr_user.user.first_name}}
                 </div>
@@ -98,18 +99,28 @@ body{
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">                    
-                    <div class="h4 text-center">Friends</div>
+                    <div class="h4 text-center">Friend Requests</div>
                     
-                    {% for usr in friends %}
+                    {% for usr in friend_requests %}
                     <div class="row ">   
                         <!--Friend Details-->                     
-                        <div class="col-4">                            
+                        <div class="col-3">                            
                             <a href = "/users/profile/{{usr.user.username}}"><img class="center-block img-responsive img-circle img-thumbnail thumb48" src={{usr.pic.url}} alt="Profile Picture"></a>
                         </div>
-                        <div class="col-8">
+                        <div class="col-6">
                             <a href = "/users/profile/{{usr.user.username}}">
                                 <b>{{usr.user.first_name}} {{usr.user.last_name}}</b>
                             </a>
+                        </div>
+                        <div class="col-3">                            
+                            <form class="form-inline" action="/users/accept-request/{{usr.user.username}}/" method="post">
+                                {%csrf_token%}
+                                <input type="submit" class="btn btn-primary" value="Accept Request">                                
+                            </form>
+                            <form class="form-inline" action="/users/reject-request/{{usr.user.username}}/" method="post">
+                                {%csrf_token%}
+                                <input type="submit" class="btn btn-primary" value="Reject Request">                                
+                            </form>
                         </div>
                     </div>
                     <hr >

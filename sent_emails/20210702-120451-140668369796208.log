@@ -1,0 +1,22 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: TestSite password reset
+From: webmaster@localhost
+To: anuratb@yahoo.com
+Date: Fri, 02 Jul 2021 12:04:51 -0000
+Message-ID: <162522749190.21946.9777678508054684672@anurat-Inspiron-3576>
+
+
+To initiate the password reset process for your usr2 TestSite Account,
+click the link below:
+
+http://127.0.0.1:8000/users/reset/reset/Mw/ap5qw3-977062f991176e82c5fcebcaf7404d6f/
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+Sincerely,
+The TestSite Team
+
+-------------------------------------------------------------------------------

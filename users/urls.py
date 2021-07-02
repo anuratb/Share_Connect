@@ -16,5 +16,9 @@ urlpatterns = [
     path('<username>/friends/',views.friends),
     path('blogs/<username>/',views.blogs),
     path('blogs/',views.blogs),
-    path('search/',views.search)
+    path('search/',views.search),
+    path('friend-requests/',views.friend_requests),
+    path('accept-request/<username>/',views.accept_request),
+    path('send-friend-req/<username>/',views.send_friend_request),
+    path('reject-request/<username>/',views.reject_request)
 ]

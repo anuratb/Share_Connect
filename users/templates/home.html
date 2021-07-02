@@ -4,6 +4,10 @@
     body {
         {% load static %}
         background-image: url({% static '/galaxy.jpg' %});
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
     }
 
     .navbar {
@@ -69,12 +73,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/users/{{user.user.username}}/friends/">Friends</a>
                     </li>
+                        
                     <li class="nav-item">
-                        <a class="nav-link" href="/users/{{user.user.username}}/friends-requests/">Friend Requests</a>
+                        <a class="nav-link" href="/users/friend-requests/">Friend Requests</a>
                     </li>
+                        
                     <li class="nav-item">
                         <a class="nav-link" href="/users/logout">Logout</a>
                     </li>
+                    <div class="nav-item " >
+                        Welcome, {{user.user.first_name}}
+                    </div>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/users/login">Login</a>

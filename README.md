@@ -10,13 +10,5 @@ based on the upvotes and downvotes.One can also send <i>friend requests</i> and 
 has the support of setting the <i>visibility</i> of the blogs ,namely, <i>Public,Friends and Only_me</i>.Friendships
 are maintained using many to many relationships in the dbms.
 
-## Steps to run the development server
-
-- In blog_backend/settings.py set the Secret key for development (any large random value),set DEBUG to True ,and set the EMAIL_HOST_USER and EMAIL_HOST_PASSWORD,to the gmail account from which you wish to send the reset password mails
-  
-- Run the following the start the server    
-`python manage.py runserver`
-
-
 ## Deployment
 The app has been deployed to heroku at : https://share-connect.herokuapp.com/users/

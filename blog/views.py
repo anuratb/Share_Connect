@@ -20,13 +20,14 @@ def post_blog(request):
             
             return redirect(request.META['HTTP_REFERER'])
 
-    except Exception :
-        return HttpResponse('Failed To post Blog')
+    except Exception as e:
+        return HttpResponse('Failed To post Blog, Error Message: '+str(e))
 
 @login_required
 def update_blog(request,**kwargs):
     try:
         if(request.method == 'POST'):
+            #print('Blog Updating')
             blg_id = kwargs.get('blog_id')
             if(blg_id is None):
                 return HttpResponseNotFound('Page Not Found')
@@ -39,10 +40,11 @@ def update_blog(request,**kwargs):
             blg.content = request.POST['content']
             blg.visibility = request.POST['visibility']
             blg.save()
+            #print('Blog Updated')
             return redirect(request.META['HTTP_REFERER']+request.POST['back_ref'])
 
-    except Exception :
-        return HttpResponse('Failed To Update Blog')
+    except Exception as e:
+        return HttpResponse('Failed To Update Blog, Error Message: '+str(e))
 @login_required
 def upvote(request,**kwargs):
     if(request.method=='POST'):

@@ -16,8 +16,7 @@ class Blog(models.Model):
         ( ONLY_ME,"Only Me"),
         (FRIENDS,"Friends"),
         (PUBLIC,"Public")
-    ]
-    id = IntegerField(primary_key=True)
+    ]    
     author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='blogs')
     content = models.TextField()
     subject = models.TextField()
@@ -82,7 +81,7 @@ class Blog(models.Model):
 
 
 class Comment(models.Model):
-    id = IntegerField(primary_key=True)
+    
     author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='comments')
     subject = TextField()
     content = TextField()

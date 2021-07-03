@@ -206,6 +206,7 @@ def profile(request, **kwargs):
                             'upvoted':request.user in comment.upvoted.all(),
                             'downvoted':request.user in comment.downvoted.all()
                             }for comment in blg.comments.all()],
+                    'friend_req_sent': False,
                     'upvoted':request.user in blg.upvoted.all(),
                     'downvoted':request.user in blg.downvoted.all()} for blg in blgs],
                     'curr_user':request.user.profile
@@ -224,7 +225,7 @@ def profile(request, **kwargs):
                     "nf": usr.profile.friends.count(),
                     "is_auth": True,
                     "is_friend": is_friend,
-                    "friend_req_sent": usr.profile in request.user.profile.sent_friend_req_list.all(),
+                    'friend_req_sent': usr.profile in request.user.profile.sent_friend_req_list.all(),
                     'blgs':[{'blg':blg,'comments':[{
                             'comment':comment,
                             'upvoted':request.user in comment.upvoted.all(),
@@ -244,6 +245,7 @@ def profile(request, **kwargs):
                 "is_curr_user": False,
                 "nf": usr.profile.friends.count(),
                 "is_auth": False,
+                'friend_req_sent': False,
                 'blgs':[{'blg':blg,'comments':[{
                             'comment':comment
                             }for comment in blg.comments.all()]} for blg in blgs]

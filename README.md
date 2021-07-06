@@ -1,7 +1,7 @@
 # Share_Connect
 
 This is a web app created using <a href="https://www.djangoproject.com/">Django</a> , Bootstrap, Jquery,HTML,CSS,JS.
-SQLite is used during development ,but migrated to Pogresql, while deploying with the help of <a href="https://pypi.org/project/django-heroku/">django-heroku</a> utility.
+SQLite is used during development ,but migrated to PostgreSQL, while deploying with the help of <a href="https://pypi.org/project/django-heroku/">django-heroku</a> utility.
 <hr>
 
 ## About Share_Connect
